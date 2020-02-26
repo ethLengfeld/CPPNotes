@@ -657,10 +657,104 @@ struct is public
 
 
 // ORGANIZING C++ CLASSES
+SomeClass.h:
+# ifndef HEADER_GUARD_MACRO // Unique macro name
+# define HEADER_GUARD_MACRO
+// includes need for class definition
+class SomeClass {
+// friends first
+public :
+// public members
+// public constructors , copy - control
+// public functions
+private :
+// private members
+// private functions
+}; // Don ’t forget the semi - colon !
+# endif // HEADER_GUARD_MACRO
+
+
+
+// Constructors
+HockeyPlayer.h:
+public :
+// makes this default constructor
+HockeyPlayer () = default ;
+// name(n) will automatically assign n to name field
+HockeyPlayer (std :: string n): name (n) {}
+// could be called HockeyPlayer player = "ethan"; to prevent this use the word explicit
+
+
+HockeyPlayer.h:
+public :
+HockeyPlayer () = default ;
+HockeyPlayer (std :: string n, int g, int a):
+name (n), goals (g), assists (a) {}
+// this makes 
+explicit HockeyPlayer (std :: string n): HockeyPlayer (n, 0, 0){}
+private :
+std :: string name {""};
+int goals {0};
+int assists {0};
+int gamesPlayed {0};
+double toi {0.0};
+double penaltyMin {0.0};
+
+
+
+
+// Best practice: write initializers in same order as they are
+// declared:
+Foo(int val): i(val), j(val) {}
+
+
+
+
+
+// FRIENDS - let them play with private members
+class HockeyPlayer {
+friend std :: ostream & operator <<( std :: ostream &os , const HockeyPlayer & rhs );
+
+<< // Operating Overload
 
 
 
 
 
 
+// Rule of 3
+// The Big Three
+
+// In class Foo: (nearly always public)
+
+// Copy Constructor (Copy c-tor)
+Foo(const Foo&);
+
+// Copy-Assignment (Copy op=)
+Foo& operator=(const Foo&);
+
+// Destructor (d-tor)
+~Foo();
+
+
+// All classes need rules for copying, assigning, and
+// destroying.
+// C++ will synthesize any of the big three if not defined.
+// The synthesized versions are shallow bit-wise by default.
+
+
+
+// Resource Acquisition Is Initialization (RAII)
+
+// Key C++ Programming Technique
+// Tie a resources scope to the life span of an object.
+// Resources such as: heap memory, open sockets, open files,
+// mutexes, database connections...
+
+// Connection to the Rule of Three
+// To avoid resource leaks, any class that controls resources
+// require:
+Copy c-tor
+Copy op=
+d-tor
 
