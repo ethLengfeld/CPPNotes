@@ -713,7 +713,7 @@ Foo(int val): i(val), j(val) {}
 
 // FRIENDS - let them play with private members
 class HockeyPlayer {
-friend std :: ostream & operator <<( std :: ostream &os , const HockeyPlayer & rhs );
+friend std :: ostream &operator <<( std :: ostream &os , const HockeyPlayer & rhs );
 
 << // Operating Overload
 
@@ -758,3 +758,154 @@ Copy c-tor
 Copy op=
 d-tor
 
+
+// Fraction Class
+# ifndef FRACTION_EX_H
+# define FRACTION_EX_H
+# include <iostream >
+class UnsignedFraction {
+	friend std :: ostream & operator <<( std :: ostream &, const UnsignedFraction &);
+	friend std :: istream &operator >>( std :: istream &, UnsignedFraction &);
+	friend UnsignedFraction operator +( const UnsignedFraction &, const UnsignedFraction &);
+	friend bool operator ==( const UnsignedFraction &, const UnsignedFraction &);
+	friend bool operator !=( const UnsignedFraction &, const UnsignedFraction &);
+	friend bool operator <( const UnsignedFraction &, const UnsignedFraction &);
+	
+	public :
+		UnsignedFraction () = default ;
+		UnsignedFraction ( const unsigned long long n): num (n) {};
+		UnsignedFraction ( const unsigned long long n,
+		const unsigned long long d): num (n), denum (d) {};
+		UnsignedFraction &operator =( const unsigned long long );
+		UnsignedFraction &operator +=( const UnsignedFraction &);
+		UnsignedFraction &operator ++(); // Prefix
+		UnsignedFraction operator ++( int ); // Postfix
+		unsigned long long &operator []( const unsigned int );
+		const unsigned long long &operator []( const unsigned int ) const ;
+		operator double () const ;
+	private :
+		unsigned long long num {0};
+		unsigned long long denum {1};
+};
+# endif // FRACTION_EX_H
+
+// DATE 03/28/2020
+// Operator Overloading
+
+// Overloadable:
++ - * / % ^ & | ~ ! , = ->
+< > <= >= ++ – << >> == != && || ->*
++= -= /= %= ^= &= |= *= <<= >>= [] ()
+new   new[]    delete    delete []
+
+//Non-overloadable: 
+. .* :: ?: sizeof
+
+// Output Operator Overload
+ostream &operator <<( ostream &os , const UnsignedFraction &rhs )
+{
+	os << rhs . num << "/" << rhs . denum ;
+	return os;
+}
+
+// Input Operator Overload
+istream &operator >>( istream &is , UnsignedFraction &rhs )
+{
+	string s;
+	is >> rhs . num >> s >> rhs . denum ;
+	if (! is || s != "/")
+	{
+		rhs . num = 0;
+		rhs . denum = 1;
+	}
+	return is;
+}
+
+// Arithmetic Operator Overload
+UnsignedFraction operator +( const UnsignedFraction &lhs , const UnsignedFraction &rhs )
+{
+	return UnsignedFraction ( lhs . num * rhs . denum + rhs . num * lhs.denum ,
+								lhs . denum * rhs . denum );
+}
+
+// Comparison Operator Overload
+bool operator ==( const UnsignedFraction &lhs , const UnsignedFraction &rhs )
+{
+	return lhs .num * rhs. denum == rhs . num * lhs. denum ;
+}
+
+bool operator !=( const UnsignedFraction &lhs , const UnsignedFraction &rhs )
+{
+	return !( lhs == rhs );
+}
+
+bool operator <( const UnsignedFraction &lhs , const UnsignedFraction &rhs)
+{
+	return lhs .num * rhs. denum < rhs .num * lhs . denum ;
+}
+/* if you define one of the < brackets you should define the other relational operators */
+
+
+// Assignment Operators Overload
+// MUST be member functions
+UnsignedFraction &UnsignedFraction :: operator =( const unsigned long long rhs )
+{
+	if( this != &rhs ) {
+		*this . num = rhs . num ;
+		*this . denum = rhs. denum ;
+	}
+	return * this ;
+}
+UnsignedFraction &UnsignedFraction :: operator +=( const UnsignedFraction &rhs )
+{
+	*this = *this + rhs ;
+	return *this ;
+}
+
+// Subscript Operators Overload
+// MUST be member functions
+// MUST have two versions; const and non-const
+// The should be two:
+	// A non-const version for setting.
+	// A const version for getting.
+unsigned long long &UnsignedFraction :: operator []( const unsigned int index )
+{
+	if( index % 2 == 0) return num ;
+	return denum ;
+}
+
+const unsigned long long &UnsignedFraction :: operator []( const unsigned int index ) const
+{
+	return (*this)[index];
+}
+
+// Prefix and Postfix Operators Overload
+
+UnsignedFraction &UnsignedFraction::operator++()
+{
+	num += denum ;
+	return * this ;
+}
+
+UnsignedFraction UnsignedFraction :: operator ++(int)
+{
+	UnsignedFraction toRet (*this);
+	++(*this);
+	return toRet;
+}
+
+// Conversion Operators
+// Must be a member function.
+// Must be no return type and no parameters.
+// Use explict modifier to prevent implicit use of conversion.
+// Converts class instance to another data type.
+// For data type to class instance, make a constructor with a single pararmeter
+
+class UnsignedFraction {
+	public :
+		operator double () const ;
+};
+UnsignedFraction::operator double () const
+{
+	return static_cast <double>( num ) / denum ;
+}
