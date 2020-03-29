@@ -909,3 +909,114 @@ UnsignedFraction::operator double () const
 {
 	return static_cast <double>( num ) / denum ;
 }
+
+
+
+// DATE 03/28/2020
+// Templates
+
+// Both functions and classes can be templated.
+// The templates are instructions to the compiler
+
+
+// Compilation Stages:
+/*
+1 Template Compilation: The compiler checks the for syntax
+errors such as missing semi-colon or misspelled names. No
+runnable code is created.
+2 Template Usage: The compiler verifies that the usage of
+the template is correct: number of arguments is correct,
+and data types appropriate.
+3 Instantiation: The compiler creates the type specific code
+from the usage, and compiles it, which may lead to type
+specific errors.
+*/
+
+
+// Generic Functions
+
+
+// Functions Templates
+template<typename T> T combine(T a, T b)
+{
+	T c = a + b;
+	return c;
+}
+// template keyword indicates a template.
+// typename keyword indicates a undefined type.
+// class keyword can be used instead of typename.
+// T is the undefined typename (can be any name).
+// Once declared in the template, T can be used like any other type.
+
+# include <iostream >
+template < typename T> T combine (T a, T b)
+{
+	T c = a + b;
+	return c;
+}
+int main ()
+{
+	std :: cout << combine (2 ,3) << " "
+				<< combine (2.0 , 3.5);
+}
+/* THIS WILL NOT COMPILE!! */
+// However we could fix that with this
+template<typename T, typename S> T combine(T a, S b)
+
+
+
+// Non-type Template Parameters
+template <typename T, int d> T combine (T a, T b)
+{
+	T c = a + b + d;
+	return c;
+}
+// Non-type template parameters must be constant expression.
+// Parameterizes the template by a constant value.
+
+
+
+// Default Arguments for Generics
+template < typename T=int , int d=3> T combine (T a, T b)
+{
+	T c = a + b + d;
+	return c;
+}
+// Just like with function parameters, you can define default values for the template parameters
+
+
+//Template Overloading
+template < typename T> T combine (T a, T b)
+{
+	T c = a + b;
+	return c;
+}
+template < typename T> T combine (T *a, T *b)
+{
+	T c = *a + *b;
+	return c;
+}
+// Templates like functions can be overloaded.
+// In the example, works the same for non-pointers and pointers.
+
+
+// CLASS Templates
+template <typename T>
+class FooTemplate {
+	public :
+		FooTemplate (T in ): data (in ){};
+		FooTemplate combine ( FooTemplate f);
+		template <typename T2 > FooTemplate doSomething (T2 );
+	private :
+		T data {};
+		static int c;
+};
+// Parameterized classes built by the compiler based on usage; similar to template functions.
+/* Each generated class is its own class. */
+// Same inline rules apply.
+
+
+
+
+
+
