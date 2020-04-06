@@ -1017,6 +1017,183 @@ class FooTemplate {
 
 
 
+// DATE 04/06/2020
+// More STL
+
+// https://en.cppreference.com/w/cpp/header/algorithm
+
+// STL Algorithms
+// Parameter Patterns
+
+alg(beg, end, other args);
+alg(beg, end, dest, other args);
+alg(beg, end, beg2, other args);
+alg(beg, end, beg2, end2, other args);
+
+// alg – The algorithm function name.
+// beg and end – Begin and end iterators.
+// dest – Destination begin iterator.
+// beg2 and end2 – Destination begin and end iterators.
+// other args – Often helper callable objects.
+
+
+// Iterator Types
+
+// Normal Iterators
+	// Iterators defined for each container.
+	// I.e., begin, end, cbegin, cend
+	
+// Reverse Iterators
+	// Like normal iterators, but go back to front.
+	// I.e., rbegin, rend, crbegin, crend
+	// rend is one past the front.
+
+// Move Iterators
+	// Used for moving operations on containers.
+	// Yields an rvalue reference (&&) when dereferenced.
+
+
+// Header: these types require
+#include <iterator>
+// Stream Iterators
+	// Iterator bound to an input or output stream.
+
+// Insert Iterators
+	// Iterator for inserting into containers.
 
 
 
+// Reverse Iterator Example
+# include <iostream >
+# include <vector >
+# include <algorithm >
+using namespace std;
+void pOut (int i)
+{
+cout << i << " ";
+}
+int main () {
+vector <int > v = {1 ,2 ,3 ,5 ,8 ,42};
+for_each (v. crbegin (), v. crend (), pOut );
+}
+// 42 8 5 3 2 1
+
+
+// Stream Iterators
+
+//Input Stream Iterator
+
+// Works on any input stream and data type for which >> is defined.
+istream_iterator<T> in(is);
+	// in is the iterator name and is is an input stream.
+istream_iterator<T> end;
+	// end is the iterator name. No arguments sets the end value.
+in1 == in2 or in1 != in2
+	// Equality comparisons.
+++in,in++
+	// Sequential access through pre and post increment.
+*in and in->mem
+	// Dereferencing.
+
+
+// Output Stream Iterator
+// Works on any output stream and data type for which << is defined.
+ostream_iterator<T> out(os);
+	// out is the iterator name and os is an input stream.
+ostream_iterator<T> out(os, d);
+	// d is a c-style string appended to each output.
+out1 = val
+	// Value assignment.
+*out, ++out,out++
+	// Exists; returns out.
+
+
+// Example
+# include <iostream >
+# include <vector >
+# include <algorithm >
+# include <iterator >
+using namespace std;
+int main () {
+vector <int > v = {1 ,2 ,3 ,5 ,8 ,42};
+fill_n (v. begin (), 10, 5); // gives seg-fault error. past vector length
+ostream_iterator <int > out_itr (cout , " ");
+copy (v. cbegin (), v. cend (), out_itr );
+}
+
+
+
+// Insert Iterator
+
+
+// An adaptor that takes a container and yields an iterator that
+// adds elements to that container.
+
+it = val
+	// Adds val to the container via push_back,
+	// push_front, or insert depending on insert type.
+*it,++it,it++
+	// Exists; returns it.
+
+// Insert Types
+//ct is a container.
+	back_inserter(ct);
+		//Insert using push_back.
+	front_inserter(ct);
+		// Insert using push_front.
+	inserter(ct, itr);
+		// Inserts using insert; all insertions in
+		// front of iterator itr.
+
+
+
+// Iterator Hierarchy
+
+// Random-access Iterator
+	// Relational ops (<,>,<=,>=), add/sub ops (+,+=,-,-=) with
+	// integral, sub op (-) between iterators, subscript op ([])
+	
+// Bidirectional Iterator
+	// Pre and post --
+	
+// Forward Iterator
+	// Can read and write (multiple times)
+	
+// Input/Output Iterator
+	// Sequential, can read or write, pre and post ++, dereference (*
+	// and ->)
+
+
+
+// Functors
+
+struct absInt {
+	int operator ()( int val ) const {
+		return val < 0 ? -val : val ;
+	}
+};
+// Definition
+	// Porte-monteau of “function” and “object”. It is an object that
+	// behaves like a function, i.e., we can use the () operator and
+	// provide pass in arguments.
+	
+//Creating a Functor
+	// Overload the operator() with appropriate parameters.
+	
+	
+	
+// Container Adaptors
+
+// Definition
+	// An interface that makes a container behave like a particular
+	// data structure.
+// Types
+	// stack: Default using deque
+	// queue: Default using deque
+	// priority_queue: Default using vector
+
+// Example:
+// A stack of ints based on deque
+stack <int > stk ;
+// A stack of ints based on a vector
+stack <int , vector <int > > stk2 ;
