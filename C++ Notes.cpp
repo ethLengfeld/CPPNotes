@@ -1197,3 +1197,235 @@ struct absInt {
 stack <int > stk ;
 // A stack of ints based on a vector
 stack <int , vector <int > > stk2 ;
+
+
+
+
+// DATE 04/08/2020
+// Exceptions
+
+// What’s Different in C++
+
+// Anything can be thrown.
+// All exceptions in C++ are unchecked.
+// There are no finally blocks in C++.
+
+// catch(...) is C++ for catch(Exception e).
+
+// C++ doesn’t care about English grammar – only throw in C++, no throws.
+throw
+
+// Example
+# include <iostream>
+# include <string>
+using namespace std;
+void bar ()
+{
+	throw 42;
+}
+int main ()
+{
+	try {
+		bar ();
+	}
+	catch ( string s) {
+		cout << " Caught string : " << s;
+	}
+	catch ( int i) {
+		cout << " Caught int : " << i;
+	}
+	catch (...) {
+		cout << " Caught something .";
+	}
+}
+// Output: Caught int : 42
+
+
+// In C++, any object can be thrown!
+
+// example
+try {
+	tryStatements ;
+}
+catch ( AnyDataType e) {
+	catch1Statements ;
+}
+catch ( AnyDataType e) {
+	catch1Statements ;
+}
+.
+.
+.
+catch ( AnyDataType e) {
+	
+}
+
+
+// Exception handling vs c-style error codes is slow.
+
+// What to catch?
+
+// If a value or a reference is thrown, you can catch it as a value or a reference.
+// If a pointer is thrown, you have to catch it as a pointer.
+// Best practice: catch as a reference.
+
+
+catch(...)
+// The ellipse (...) catches everything.
+// When used, it should be the last catch block.
+// No (good) way to recover the thrown object since any data type can be thrown. Do generic simple processing/ error message
+
+// Rethrowing
+
+// Within a catch:
+	throw;
+// Re-throws the caught object.
+
+// Advanced Exceptions
+
+// The ellipse (...) catches everything.
+// When used, it should be the last catch block.
+// No (good) way to recover the thrown object since any data type can be thrown
+
+
+# include <iostream >
+using std :: cout ;
+int main ()
+{
+	try {
+		try {
+			throw " qwerty ";
+		}
+		catch (...) {
+			cout << "foo";
+			throw ;
+		}
+	}
+	catch (...) {
+			cout << "bar";
+	}
+}
+
+
+// No Exception Promise
+// noexcept as a Function Modifier
+	void myFunc() noexcept;
+	void myFunc() noexcept(true);
+// Pre-C++11: 
+	void myFunc() throw();
+// Prevents a function from throwing exceptions:
+// No checked at compilation.
+// If an uncaught exception reaches myFunc, then
+// std::terminate is called.
+
+// noexcept can be used as an operator to check if a function
+// might throw an exception:
+	noexcept(myFunc()); //evaluates to true
+	
+
+
+// Stack Unwinding
+
+// Thrown object pass through the stack frames until:
+// 1) main is unwound and the program terminates; or
+// 2) Reaches a function that does not throw exceptions and the program terminates; or
+// 3) Gets caught by catch block.
+
+// Each function call is unwound from the stack, calling destructors on local objects.
+// * Risks: Resource leaks. *
+
+// RAII is Key
+	// Resource Allocation Is Initialization
+// Key C++ principal that helps avoid resource leaks.
+// As stack is unwound, resources are released by destructors.
+
+
+
+// Destructors
+
+// DON’T throw exceptions in destructors unless you like your
+// program crashing, or resource leaks.
+
+
+// Constructors
+// Do throw exceptions from constructors.
+// In fact, it is the only way to signal an error since
+// constructors have no return type.
+// Watch out: destructor only called for fully constructed
+// objects.
+
+
+// Examples
+# include <iostream >
+using namespace std ;
+class bar {};
+class foobar : public bar {};
+int main ()
+{
+try {
+foobar fb;
+bar &f = fb;
+throw f;
+}
+catch ( foobar f) {
+cout << " Caught foo!";
+}
+catch ( bar b) {
+cout << " Caught bar !";
+}
+}
+// Output: Caught foo!
+
+# include <iostream >
+using namespace std ;
+class bar { public : virtual void raise () {} };
+class foobar : public bar { public : void raise () { throw * this ; } };
+int main ()
+{
+try {
+foobar fb;
+bar &f = fb;
+f. raise ();
+}
+catch ( foobar &f) {
+cout << " Caught foo!";
+}
+catch ( bar &b) {
+cout << " Caught bar !";
+}
+}
+// Output: Caught foo!
+
+
+// Polymorphism and Throw
+class bar { public : virtual void raise () {} };
+class foobar : public bar { public : void raise () { throw * this ; } };
+int main ()
+{
+	try {
+	foobar fb;
+	bar &f = fb;
+	f. raise ();
+}
+// No polymorphic behaviour on a throw
+// The thrown object is the data type that is thrown.
+// To get polymorphic behaviour use a virtual function to raise the exception.
+
+
+
+// Custom Exceptions
+
+// Best Practices
+	// Extend from exception or a subclass.
+	// Don’t base your exception hierarchy off of your class hierarchy:
+		class Foo uses FooMismatchError.
+		class Bar uses BarMismatchError.
+	// Rather have class share conceptually similar exceptions:
+	// MismatchError used by Foo and Bar.
+
+/*
+Create the least amount of exceptions that coverage the most hierarchy
+*/
+
+
+
