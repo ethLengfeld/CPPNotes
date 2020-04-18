@@ -1429,3 +1429,143 @@ Create the least amount of exceptions that coverage the most hierarchy
 
 
 
+// DATE 04/18/2020
+// RAII and Smart Pointers
+
+
+// RAII should prevent all memory leaks 
+
+// should use list initailizers over straight assignment
+foo(): b(new bar(0)) {};
+// is better than
+foo(): b = new bar(0) {};
+
+
+// member variables should be initizalized with nullptr;
+// ex.
+private:
+	bar *b{nullptr};
+
+// RAII - Resource Acquisition Is Initialization
+// RAII prevents resource (memory) leaks
+// Gives exception-safe code
+
+
+
+// Smart Pointers
+
+// Dynamic Memory Allocation
+	// Allocations of heap (dynamic) memory is a common
+	// source of resource (memory) leaks in C++ code.
+// Smart Pointers
+	// Smart Pointers are pointer wrappers:
+	// Classes that follow RAII specifically for heap memory.
+	// Overload pointer operators: *, ->
+	// Handle the rule of 3 or 5.
+	
+// There are standard implementations in header <memory>.
+	// unique_ptr
+	// shared_ptr
+	// weak_ptr
+
+// Smaart Pointer Example
+template < typename T>
+class SimpleSmartPointer {
+	public :
+		SimpleSmartPointer (): ptr(new T ()) {}
+		SimpleSmartPointer (T v): ptr( new T(v)) {}
+		SimpleSmartPointer ( SimpleSmartPointer &S) = delete ;
+		~ SimpleSmartPointer () { delete ptr; }
+		
+		SimpleSmartPointer & operator =( SimpleSmartPointer &s) {
+			delete ptr;
+			this->ptr = s.ptr;
+			s.ptr = nullptr ;
+		}
+		
+		T& operator *() { return * ptr; }
+		T* operator - >() { return ptr; }
+	private :
+		T *ptr { nullptr };
+};
+
+
+// Unique Pointer
+
+// unique_ptr<T, Deleter=std::default_delete<T>>
+	// Owns and manages another object through a pointer and
+	// disposes of that object when destroyed.
+	// T is the pointer type.
+	// Deleter is optional – a function to delete the resource.
+
+// Basic Functions
+	// *, ->, [], <<, bool and comparison ops are overloaded.
+	// operator=(unique_ptr &) – transfers ownership.
+	// get() – retrieves the pointer.
+	// release() – returns the pointer and release ownership.
+	// reset(T*) – replaces the managed object.
+	// swap(unique_ptr &) – swaps the ownership.
+
+
+// Shared Pointer
+
+// shared_ptr<T>
+	// Retains shared ownership of an object through a pointer.
+	// Several shared_ptr objects may own the same object.
+	// Only deletes the resource when last shared object is
+	// destroyed.
+	// Has the same basic functions as unique_ptr
+	// Deleter can be set when constructed.
+	
+// Specific shared_ptr<T> Functions
+	// use_count() – Returns the number of shared_ptr objects
+	// referring to the same managed object.
+	// Best Practice: Use make_shared<T>(args) to build shared
+	// object:
+		auto sPtr = std::make_shared<string>("foo");
+		
+
+// Weak Pointer
+
+// weak_ptr<T>
+	// Holds a non-owning (“weak”) reference to an object managed
+	// by a shared_ptr.
+	// Constructed from a shared_ptr.
+	// Since it is a “weak” reference, the referenced object (owned
+	// by a shared_ptr) might be deleted.
+	// Has the same functions as shared_ptr
+	
+// Specific weak_ptr<T> Functions
+	// expired() – Returns true if managed object has been
+	// deleted.
+	// lock() – Creates a shared_ptr<T> for the managed object.
+
+
+
+// Pointer example
+# include <iostream>
+// include for smart pointers
+# include <memory>
+
+using namespace std ;
+
+void checkPtr ( weak_ptr <int > &wp)
+{
+	if ( auto sPtr = wp.lock())
+		cout << *sPtr ;
+	else
+		cout << " Deleted ";
+}
+
+int main ()
+{
+	weak_ptr <int > wp;
+	{
+		auto sp = make_shared<int>(42);
+		wp = sp;
+		checkPtr (wp);
+	}
+	checkPtr (wp);
+}
+
+// Output 4242
