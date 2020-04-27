@@ -1569,3 +1569,192 @@ int main ()
 }
 
 // Output 4242
+
+
+
+// DATE 04/26/2020
+// LAMBDAS
+
+// Functor
+struct absInt {
+	int operator ()( int val ) const {
+		return val < 0 ? -val : val ;
+	}
+};
+
+
+// Lambdas
+transform (v. begin (), v.end (), v. begin (), []( int i) -> int { return i < 0 ? -i : i; });
+// Definition
+
+	// A lambda expression is an anonymous function. That is, a callable unit of code.
+
+// Lambda Expression Syntax
+	// [capture list] (param list) -> ret type { function body }
+	// Must be declared using trailing return style.
+	// capture list – Used to capture local variables.
+	// param list and ret type are optional.
+	
+	// No return type – Return type is inferred if single return
+	// statement, otherwise void.
+	
+	
+// Capturing Local Variables
+[] // Empty capture; no locals captured.
+[names list] // List of locals by name to capture (prefixed by & to capture by reference).
+[&] // Implicitly capture all locals by reference.
+[=] // Implicitly capture all locals by value.
+[&,id list] // Implicitly capture locals by reference; id list listed locals are captured by value (no & prefix allowed).
+[=,ref list] // Implicitly capture all locals by value; ref list listed locals are captured by reference (all must be prefixed by &).
+
+// Best Practice
+	/* Keep captures simple – in general, minimize your captures. */
+
+
+
+// Examples
+# include <iostream >
+# include <vector >
+# include <algorithm >
+# include <iterator >
+using namespace std;
+int main ()
+{
+int b = 1;
+vector <int > v = {1 ,2 ,3 ,5 ,8 ,42};
+for_each (v. begin (), v.end (),
+	[&b]( int i) { if (i > (++b)) cout << i; });
+	cout << b;
+}
+// Output: 8427
+
+
+# include <iostream >
+# include <vector >
+# include <algorithm >
+# include <iterator >
+using namespace std;
+int main ()
+{
+int b = 1;
+vector <int > v = {1 ,2 ,3 ,5 ,8 ,42};
+for_each (v. begin (), v.end (),
+	[b]( int i) mutable{ if (i > (++b)) cout << i; });
+	cout << b;
+}
+// Output: 8421
+
+
+
+
+// RANDOM
+
+// Randomness in C++
+
+// Best Practices (C++11)
+/* Avoid C-style rand!!!! */
+
+// Two key parts to randomness:
+	// 1. Random-Number Engines
+		// This is the pseudo-random generator.
+
+	// 2. Distribution
+		// This uses the pseudo-random generator to generated random
+		// values with a specified range, according to a certain
+		// distribution.
+
+
+// Random-Number Engines
+
+// Basic Ops
+	Engine e; // – Default constructor (usually same seed).
+	Engine e(s); // – Use s as seed.
+	e.seed(s) // – Re-seed the random generator with s.
+	e.max()/min() // – Min/max value generated.
+	e.discard(u) // – Skip the next u random values.
+	
+// Pick an Engine
+	// Best practice use: default_random_engine (compiler’s choice)
+
+// Different engines:
+	// linear_congruential_engine
+	// mersenne_twister_engine
+	// subtract_with_carry_engine
+	// See https://en.cppreference.com/w/cpp/numeric/random for more details.
+
+
+
+// Seeding the Engine
+
+// Seeding
+	// Recall that for a fixed seed the pseudo-random number
+	// sequence is fixed.
+	// A fixed seed is useful for testing randomized code.
+	// Often the current system time is used for seeding the
+	// pseudo-random process.
+
+/* 
+Best Seeding Practice in C++
+	Use std::random_device() as the seed. 
+*/
+// Hardware sourced randomness (usually).
+// It can run out so seed your process from it, don’t use it for
+// values.
+// Don’t if your compiler is MinGW and old (< GCC 9.2) as
+// here is a bug.
+
+
+
+// Distributions
+
+// Uniform Distributions
+	// uniform_int_distribution
+	// uniform_real_distribution
+	
+// Bernoulli Distributions
+	// bernoulli_distribution
+	// binomial distribution
+	// negative_binomial_distribution
+	// geometric_distribution
+	
+// Poisson Distributions
+	// poisson_distribution
+	// exponential_distribution
+	// gamma_distribution
+	// weibull_distribution
+	// extreme_value_distribution
+
+// Sampling Distributions
+	// discrete_distribution
+	// piecewise_constant_distribution
+	// piecewise_linear_distribution
+
+// Normal Distributions
+	// normal_distribution
+	// lognormal_distribution
+	// chi_squared_distribution
+	// cauchy_distribution
+	// fisher_f_distribution
+	// student_t_distribution
+	
+// Example:
+
+A Random Example
+Rolling a D&D Character Stats
+# include <random >
+# include <string >
+# include <iostream >
+std :: string stats [] = {"Str "," Dex ","Con "," Int "," Wis"," Cha "};
+int main ()
+{
+	// Build the randomness source
+	std :: default_random_engine eng ( std :: random_device {}());
+	// Create the desired distribution - UNIFORMED
+	std :: uniform_int_distribution < unsigned > statRand (3 ,18);
+	for ( auto s : stats )
+	{
+		// Generate the random value
+		std :: cout << s << ": " << statRand (eng ) << "\n";
+	}
+}
+Each stat is a number from 3 to 18 (3d6).
